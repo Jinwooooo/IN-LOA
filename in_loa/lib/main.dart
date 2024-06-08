@@ -1,4 +1,8 @@
+// IMPORTS flutter
 import 'package:flutter/material.dart';
+
+// IMPORTS self
+import 'armory/screens/armory_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,14 +27,33 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _controller = TextEditingController();
+
+  void _searchCharacter() {
+    if (_controller.text.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ArmoryScreen(characterName: _controller.text),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
         title: const Text('INLOA LOGO', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -39,13 +62,14 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            const SizedBox(
-              height: 180,
-              child: DrawerHeader(
+            Container(
+              height: 60,
+              color: Colors.blue,
+              child: const DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.blue,
                 ),
-                child: Text('', style: TextStyle(color: Colors.white)),
+                child: Text('Menu', style: TextStyle(color: Colors.white)),
               ),
             ),
             ListTile(
@@ -73,16 +97,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     height: 50,
                     color: Colors.grey[300],
-                    child: const Center(
+                    child: Center(
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: _controller,
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: '로스트아크 닉네임 검색...',
                           contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
                         ),
+                        onSubmitted: (value) => _searchCharacter(),
                       ),
                     ),
                   ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: _searchCharacter,
                 ),
               ],
             ),
